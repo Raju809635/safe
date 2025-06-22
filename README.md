@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🏥 SafeMate Care
 
 > **AI-powered Emergency SOS System for Healthcare & Elderly Assistance using Gesture Recognition + Cloud**
@@ -45,3 +46,7 @@ SafeMate Care empowers **elderly patients, disabled individuals, or hospitalized
 
 ## 📂 Folder Structure
 
+=======
+# safemate
+Safe Project  This repository contains the source code for the Safe project. It includes application logic, configuration files, and supporting scripts. Sensitive files such as Firebase credentials are excluded from version control for security reasons.  Please refer to the README for setup instructions and further documentation.
+>>>>>>> ae7883e61d11e93a2ed8576d47fc3e07ca419d2b
