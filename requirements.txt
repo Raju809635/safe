@@ -2,3 +2,5 @@ Flask==2.3.3
 firebase-admin==6.2.0
 geocoder==1.38.1
 gunicorn==21.2.0
+smtplib
+twilio==8.10.0
