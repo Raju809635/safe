@@ -12,14 +12,14 @@ from twilio.rest import Client
 app = Flask(__name__)
 
 # Emergency contact details
-EMERGENCY_EMAIL = "emergency@example.com"  # Change this
+EMERGENCY_EMAIL = "rbomma074@gmail.com"
 EMERGENCY_PHONE = "+916304679550"
 ROOM_NUMBER = "220"
 
 # Email configuration (Gmail example)
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-EMAIL_USER = "your-email@gmail.com"  # Change this
+EMAIL_USER = "rbomma074@gmail.com"
 EMAIL_PASS = "your-app-password"     # Change this
 
 # Twilio configuration (optional)
