@@ -48,27 +48,27 @@ def send_email_alert(location):
         msg = MIMEMultipart()
         msg['From'] = EMAIL_USER
         msg['To'] = EMERGENCY_EMAIL
-        msg['Subject'] = "🚨 EMERGENCY ALERT - SafeMate Care"
+        msg['Subject'] = "EMERGENCY ALERT - SafeMate Care"
         
-        body = f"""
-        🚨 EMERGENCY ALERT - SafeMate Care
-        
-        🏥 Patient requires immediate help!
-        📍 Room No: {ROOM_NUMBER}
-        📌 Location: {location.get('city')}, {location.get('state')}
-        🗺 Coordinates: {location.get('latlng')}
-        ⏰ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-        
-        Please respond immediately!
-        """
+        body = f"""EMERGENCY ALERT - SafeMate Care
+
+Patient requires immediate help!
+Room No: {ROOM_NUMBER}
+Location: {location.get('city')}, {location.get('state')}
+Coordinates: {location.get('latlng')}
+Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+Please respond immediately!"""
         
         msg.attach(MIMEText(body, 'plain'))
         
         server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
         server.starttls()
         server.login(EMAIL_USER, EMAIL_PASS)
-        server.send_message(msg)
+        text = msg.as_string()
+        server.sendmail(EMAIL_USER, EMERGENCY_EMAIL, text)
         server.quit()
+        print(f"Email sent successfully to {EMERGENCY_EMAIL}")
         return True
     except Exception as e:
         print(f"Email failed: {e}")
@@ -123,8 +123,10 @@ def trigger_sos():
             print(f"SOS Alert: Room {ROOM_NUMBER}, Location: {location}")
         
         # Send email and SMS alerts
+        print(f"Attempting to send alerts for location: {location}")
         email_sent = send_email_alert(location)
         sms_sent = send_sms_alert(location)
+        print(f"Email sent: {email_sent}, SMS sent: {sms_sent}")
         
         return jsonify({
             "success": True,
