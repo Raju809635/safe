@@ -23,7 +23,7 @@ alert_triggered = False
 last_alert_time = 0
 
 # Set emergency contact number (caregiver, nurse station, or hospital emergency contact)
-emergency_contact = "+919182180387"
+emergency_contact = "+916304679550"
 
 # Set the room number (static for now, can be dynamic)
 room_number = "220"
