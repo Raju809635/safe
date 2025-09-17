@@ -7,12 +7,17 @@ import os
 
 app = Flask(__name__)
 
-# Initialize Firebase
-if not firebase_admin._apps:
-    cred = credentials.Certificate("firebase_key.json")
-    firebase_admin.initialize_app(cred, {
-        'databaseURL': 'https://sample-firebase-ai-app-bb474-default-rtdb.asia-southeast1.firebasedatabase.app/'
-    })
+# Initialize Firebase (optional)
+try:
+    if not firebase_admin._apps:
+        cred = credentials.Certificate("firebase_key.json")
+        firebase_admin.initialize_app(cred, {
+            'databaseURL': 'https://sample-firebase-ai-app-bb474-default-rtdb.asia-southeast1.firebasedatabase.app/'
+        })
+    firebase_enabled = True
+except FileNotFoundError:
+    print("Firebase key not found - running without cloud storage")
+    firebase_enabled = False
 
 @app.route('/')
 def index():
@@ -29,23 +34,27 @@ def trigger_sos():
             "latlng": g.latlng
         }
         
-        # Save to Firebase
-        ref = db.reference("sos_alerts")
-        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-        data = {
-            "timestamp": now,
-            "room_number": "220",
-            "location": location,
-            "alert_type": "gesture_detected"
-        }
-        
-        ref.push(data)
+        # Save to Firebase (if available)
+        if firebase_enabled:
+            ref = db.reference("sos_alerts")
+            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            data = {
+                "timestamp": now,
+                "room_number": "220",
+                "location": location,
+                "alert_type": "gesture_detected"
+            }
+            
+            ref.push(data)
+        else:
+            print(f"SOS Alert: Room 220, Location: {location}")
         
         return jsonify({
             "success": True,
             "message": "SOS alert triggered successfully",
-            "location": location
+            "location": location,
+            "firebase_enabled": firebase_enabled
         })
         
     except Exception as e:
