@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SafeMate Care - Emergency SOS</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 20px; }
+        #video { width: 640px; height: 480px; border: 2px solid #333; }
+        #canvas { display: none; }
+        .status { margin: 20px; padding: 10px; border-radius: 5px; }
+        .alert { background: #f44336; color: white; }
+        .ready { background: #4CAF50; color: white; }
+        button { padding: 15px 30px; font-size: 18px; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>🏥 SafeMate Care - Emergency SOS</h1>
+    <p>Show a closed fist to trigger emergency alert</p>
+    
+    <video id="video" autoplay></video>
+    <canvas id="canvas"></canvas>
+    
+    <div id="status" class="status ready">Ready - Show fist gesture for help</div>
+    
+    <button onclick="startCamera()">Start Camera</button>
+    <button onclick="triggerManualSOS()">Manual SOS</button>
+
+    <script>
+        let hands, camera;
+        let alertTriggered = false;
+        
+        function startCamera() {
+            const video = document.getElementById('video');
+            
+            hands = new Hands({
+                locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+            });
+            
+            hands.setOptions({
+                maxNumHands: 1,
+                modelComplexity: 1,
+                minDetectionConfidence: 0.5,
+                minTrackingConfidence: 0.5
+            });
+            
+            hands.onResults(onResults);
+            
+            camera = new Camera(video, {
+                onFrame: async () => {
+                    await hands.send({image: video});
+                },
+                width: 640,
+                height: 480
+            });
+            
+            camera.start();
+        }
+        
+        function onResults(results) {
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                const landmarks = results.multiHandLandmarks[0];
+                
+                if (isFist(landmarks) && !alertTriggered) {
+                    triggerSOS();
+                }
+            }
+        }
+        
+        function isFist(landmarks) {
+            const tipIds = [8, 12, 16, 20];
+            let fingersFolded = 0;
+            
+            for (let tip of tipIds) {
+                if (landmarks[tip].y > landmarks[tip - 2].y) {
+                    fingersFolded++;
+                }
+            }
+            
+            return fingersFolded === 4;
+        }
+        
+        function triggerSOS() {
+            alertTriggered = true;
+            document.getElementById('status').className = 'status alert';
+            document.getElementById('status').textContent = 'SOS TRIGGERED! Emergency alert sent...';
+            
+            fetch('/trigger_sos', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Emergency Alert Sent!\nRoom: 220\nLocation: ${data.location.city}, ${data.location.state}`);
+                } else {
+                    alert('Error: ' + data.message);
+                }
+                
+                setTimeout(() => {
+                    alertTriggered = false;
+                    document.getElementById('status').className = 'status ready';
+                    document.getElementById('status').textContent = 'Ready - Show fist gesture for help';
+                }, 5000);
+            });
+        }
+        
+        function triggerManualSOS() {
+            triggerSOS();
+        }
+    </script>
+</body>
+</html>

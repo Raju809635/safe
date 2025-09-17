@@ -36,4 +36,4 @@ def push_sos_to_cloud(location, image_name=None, room_number=None):
         data["image_path"] = os.path.abspath(image_name)
 
     ref.push(data)
-    print("✅ SOS data pushed to Firebase")
+    print("SOS data pushed to Firebase")

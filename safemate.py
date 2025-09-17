@@ -23,7 +23,7 @@ alert_triggered = False
 last_alert_time = 0
 
 # Set emergency contact number (caregiver, nurse station, or hospital emergency contact)
-emergency_contact = "+919391268173-"
+emergency_contact = "+919182180387"
 
 # Set the room number (static for now, can be dynamic)
 room_number = "220"
@@ -69,11 +69,11 @@ while True:
                         "state": g.state,
                         "latlng": g.latlng
                     }
-                    print("📍 Location:", location)
+                    print("Location:", location)
 
                     # Upload to Firebase or Cloud
                     push_sos_to_cloud(location)
-                    print("✅ Emergency data pushed to cloud")
+                    print("Emergency data pushed to cloud")
 
                     # Compose WhatsApp message with room number
                     message = (
@@ -86,11 +86,11 @@ while True:
 
                     try:
                         pywhatkit.sendwhatmsg_instantly(emergency_contact, message, wait_time=10, tab_close=True)
-                        print("✅ WhatsApp alert sent.")
+                        print("WhatsApp alert sent.")
                     except Exception as e:
-                        print("❌ WhatsApp sending failed:", e)
+                        print("WhatsApp sending failed:", e)
 
-                    print("🚨 Healthcare SOS triggered successfully!")
+                    print("Healthcare SOS triggered successfully!")
 
             else:
                 alert_triggered = False
