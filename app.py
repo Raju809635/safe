@@ -20,7 +20,7 @@ ROOM_NUMBER = "220"
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 EMAIL_USER = "rbomma074@gmail.com"
-EMAIL_PASS = "your-app-password"     # Change this
+EMAIL_PASS = "geig qkep erjo axvv"
 
 # Twilio configuration (optional)
 TWILIO_SID = "your-twilio-sid"       # Change this
